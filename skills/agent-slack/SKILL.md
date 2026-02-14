@@ -34,20 +34,34 @@ npm i -g agent-slack
 
 ## First time setup
 
-Authentication is automatic on macOS (Slack Desktop first, then Chrome fallback).
+### macOS (automatic)
+
+Authentication is automatic (Slack Desktop first, then Chrome fallback).
 
 ```bash
-agent-slack auth import-desktop          # Import creds from Slack Desktop (macOS, default)
+agent-slack auth import-desktop          # Import creds from Slack Desktop (macOS only)
+agent-slack auth import-chrome           # Import creds from Chrome (macOS only)
 agent-slack auth test                    # Verify credentials work
 agent-slack auth whoami                  # Show configured workspaces
 ```
 
-Fallback auth methods:
+### Linux / Windows (manual)
+
+1. Open Slack in your browser and log in
+2. Open DevTools (F12) > **Network** tab
+3. Filter for `api` — look for requests to `<workspace>.slack.com/api/` (e.g. `api/client.counts`, `api/conversations.view`)
+4. Right-click any matching request > **Copy as cURL**
+5. Pipe it in:
 
 ```bash
-agent-slack auth import-chrome           # Import from Chrome (macOS)
-agent-slack auth parse-curl              # Paste a Slack cURL from browser DevTools (stdin)
-agent-slack auth add --workspace-url "https://team.slack.com" --token "xoxb-..."  # Manual token
+agent-slack auth parse-curl              # Paste the copied cURL, creds are extracted automatically
+agent-slack auth test                    # Verify credentials work
+```
+
+Or add a token directly:
+
+```bash
+agent-slack auth add --workspace-url "https://team.slack.com" --token "xoxb-..."  # Bot/user token
 ```
 
 Or set env vars (no import needed):
